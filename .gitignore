@@ -1,0 +1,23 @@
+# Node
+node_modules/
+dist/
+.env
+
+# Python
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/build.log
+
+# DB
+database/data/
+*.db
+*.sqlite
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+.vscode/
