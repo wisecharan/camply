@@ -1,6 +1,6 @@
-# Campus Placement Recruitment System
+# CAMPLY: Campus Placement Recruitment System
 
-A complete production-ready web application for automating campus placement processes.
+A production-ready web application to automate campus placement processes.
 
 ## Architecture
 - **Frontend**: React.js, Vite, TailwindCSS
