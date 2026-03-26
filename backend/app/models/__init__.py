@@ -6,6 +6,7 @@ class Student(db.Model):
     __tablename__ = 'Students'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
+    roll_number = db.Column(db.String(50), unique=True, nullable=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20))
@@ -48,6 +49,7 @@ class PlacementDrive(db.Model):
     eligibility_skills = db.Column(db.Text)
     eligibility_year = db.Column(db.Integer)
     eligibility_backlogs = db.Column(db.Integer)
+    approved_status = db.Column(db.Enum('pending', 'approved', 'rejected'), default='pending')
     deadline = db.Column(db.Date)
     interview_date = db.Column(db.Date)
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
@@ -77,9 +79,11 @@ class Notification(db.Model):
 class Admin(db.Model):
     __tablename__ = 'Admin'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    otp_code = db.Column(db.String(255), nullable=True)
+    otp_expiry = db.Column(db.DateTime, nullable=True)
 
 class ActivityLog(db.Model):
     __tablename__ = 'activity_logs'

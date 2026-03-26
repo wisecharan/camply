@@ -141,7 +141,7 @@ def get_drives():
     branch = request.args.get('branch', '')
     skills_filter = request.args.get('skills', '')
     
-    drives = PlacementDrive.query.all()
+    drives = PlacementDrive.query.filter_by(approved_status='approved').all()
     results = []
     for drive in drives:
         # Advanced search filtering
@@ -309,7 +309,7 @@ def get_recommendations():
     student_id = get_jwt_identity()
     student = Student.query.get(student_id)
     
-    drives = PlacementDrive.query.all()
+    drives = PlacementDrive.query.filter_by(approved_status='approved').all()
     student_skills = [s.strip().lower() for s in student.skills.split(',')] if student.skills else []
     
     recommendations = []

@@ -52,7 +52,7 @@ const Navbar = () => {
         {/* Left - Brand Name Only */}
         <div className="flex items-center w-1/4">
           <Link to="/" className="text-xl font-bold tracking-tight text-gray-900">
-            Camply<span className="text-indigo-600">.</span>
+            Campus Placement<span className="text-indigo-600">.</span>
           </Link>
         </div>
 

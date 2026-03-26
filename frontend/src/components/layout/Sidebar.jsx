@@ -33,6 +33,7 @@ const Sidebar = ({ role, isCollapsed, setIsCollapsed }) => {
             { name: 'Dashboard', to: '/admin/dashboard', icon: LayoutDashboard },
             { name: 'Students', to: '/admin/students', icon: Users },
             { name: 'Companies', to: '/admin/companies', icon: Briefcase },
+            { name: 'Manage Drives', to: '/admin/drives', icon: Briefcase },
             { name: 'Analytics', to: '/admin/analytics', icon: FileText },
             { name: 'Activity Feed', to: '/admin/activity', icon: Users },
             { name: 'Reports', to: '/admin/reports', icon: FileText },
@@ -65,7 +66,7 @@ const Sidebar = ({ role, isCollapsed, setIsCollapsed }) => {
                             </div>
                         ) : (
                             <span className="text-2xl font-bold tracking-tight text-gray-900 whitespace-nowrap">
-                                Camply<span className="text-indigo-600">.</span>
+                                Campus Placement<span className="text-indigo-600">.</span>
                             </span>
                         )}
                     </div>

@@ -5,10 +5,7 @@ from app.models import db
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_jwt
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_mail import Mail
 import os
-
-mail = Mail()
 
 def create_app():
     app = Flask(__name__)
@@ -22,7 +19,6 @@ def create_app():
     }})
     db.init_app(app)
     jwt = JWTManager(app)
-    mail.init_app(app)
     Limiter(
         get_remote_address,
         app=app,

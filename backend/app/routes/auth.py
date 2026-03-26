@@ -19,15 +19,19 @@ def _verify_password(stored_hash: str, password: str) -> bool:
 
 def register_student_handler():
     data = request.get_json()
-    if not data or not data.get('email') or not data.get('password') or not data.get('name'):
-        return jsonify({'message': 'Missing required fields'}), 400
+    if not data or not data.get('email') or not data.get('password') or not data.get('name') or not data.get('roll_number'):
+        return jsonify({'message': 'Missing required fields (including roll_number)'}), 400
 
     if Student.query.filter_by(email=data['email']).first():
-        return jsonify({'message': 'User already exists'}), 400
+        return jsonify({'message': 'Email already exists'}), 400
+        
+    if Student.query.filter_by(roll_number=data['roll_number']).first():
+        return jsonify({'message': 'Roll Number already exists'}), 400
 
     hashed_password = _hash_password(data['password'])
     new_student = Student(
         name=data['name'],
+        roll_number=data['roll_number'],
         email=data['email'],
         password=hashed_password,
         phone=data.get('phone'),
@@ -69,15 +73,20 @@ def login_handler():
     if not email_or_username or not password:
         return jsonify({'message': 'Missing credentials'}), 400
 
+    # Translate 'admin' username to actual admin emails
+    if email_or_username in ['admin', 'admin@camply.com']:
+        admin = Admin.query.filter((Admin.email == 'admin@campusplacement.com') | (Admin.email == 'admin@camply.com') | (Admin.email == 'admin')).first()
+    else:
+        admin = Admin.query.filter_by(email=email_or_username).first()
+
     # Check Admin First
-    admin = Admin.query.filter_by(username=email_or_username).first()
     if admin and _verify_password(admin.password, password):
         access_token = create_access_token(identity=str(admin.id), additional_claims={'role': 'admin'})
         refresh_token = create_refresh_token(identity=str(admin.id), additional_claims={'role': 'admin'})
-        return jsonify({'token': access_token, 'refresh_token': refresh_token, 'role': 'admin', 'user': {'username': admin.username}}), 200
+        return jsonify({'token': access_token, 'refresh_token': refresh_token, 'role': 'admin', 'user': {'email': admin.email}}), 200
 
-    # Check Student
-    student = Student.query.filter_by(email=email_or_username).first()
+    # Check Student (by Roll Number)
+    student = Student.query.filter_by(roll_number=email_or_username).first()
     if student and _verify_password(student.password, password):
         if student.approved_status != 'approved':
             return jsonify({'message': 'Account not approved yet by Admin'}), 403

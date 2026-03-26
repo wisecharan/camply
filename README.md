@@ -1,4 +1,4 @@
-# CAMPLY: Campus Placement Recruitment System
+# CAMPUS PLACEMENT RECRUITMENT SYSTEM
 
 A production-ready web application to automate campus placement processes.
 

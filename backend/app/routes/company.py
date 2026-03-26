@@ -130,6 +130,7 @@ def get_company_drives():
             'eligibility_skills': drive.eligibility_skills,
             'eligibility_year': drive.eligibility_year,
             'eligibility_backlogs': drive.eligibility_backlogs,
+            'approved_status': drive.approved_status,
             'deadline': drive.deadline.isoformat() if drive.deadline else None,
             'interview_date': drive.interview_date.isoformat() if drive.interview_date else None,
             'applicant_count': applicant_count

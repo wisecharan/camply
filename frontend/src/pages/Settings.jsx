@@ -66,7 +66,7 @@ const Settings = () => {
                                             <input
                                                 type="email"
                                                 disabled
-                                                value={user?.email || 'admin@camply.com'}
+                                                value={user?.email || 'admin@campusplacement.com'}
                                                 className="w-full px-5 py-3.5 border border-gray-200 rounded-2xl bg-gray-50/50 text-gray-500 font-medium cursor-not-allowed outline-none"
                                             />
                                             <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">

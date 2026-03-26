@@ -63,7 +63,13 @@ const Drives = () => {
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
                                         <h3 className="text-lg font-semibold text-gray-900">{drive.role}</h3>
-                                        <span className="px-2.5 py-1 bg-green-50 text-green-700 text-[10px] font-semibold uppercase tracking-wide rounded-md border border-green-100">Active</span>
+                                        <span className={`px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-md border ${
+                                            drive.approved_status === 'approved' ? 'bg-green-50 text-green-700 border-green-100' :
+                                            drive.approved_status === 'rejected' ? 'bg-red-50 text-red-700 border-red-100' :
+                                            'bg-amber-50 text-amber-700 border-amber-100'
+                                        }`}>
+                                            {drive.approved_status || 'Pending'}
+                                        </span>
                                     </div>
 
                                     <p className="text-sm text-gray-500 line-clamp-1 max-w-2xl mb-4">{drive.description}</p>

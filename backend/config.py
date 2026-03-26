@@ -14,14 +14,6 @@ class Config:
     JWT_ALGORITHM = 'HS256'
     JWT_DECODE_ALGORITHMS = ['HS256']
     
-    # Flask-Mail Configuration
-    MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.gmail.com'
-    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 587)
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes')
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or ''
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or ''
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@campusplacement.local'
-    
     # File Uploads
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or 'uploads'
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10 MB max upload

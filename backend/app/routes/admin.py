@@ -123,6 +123,52 @@ def approve_user():
     
     return jsonify({'message': f'{user_type.capitalize()} account status updated to {status}'}), 200
 
+@admin_bp.route('/all-drives', methods=['GET'])
+@role_required('admin')
+def get_all_drives():
+    drives = db.session.query(PlacementDrive, Company).join(Company, PlacementDrive.company_id == Company.id).all()
+    results = []
+    for drive, company in drives:
+        results.append({
+            'id': drive.id,
+            'company_name': company.company_name,
+            'role': drive.role,
+            'approved_status': drive.approved_status,
+            'deadline': drive.deadline.isoformat() if drive.deadline else None,
+            'created_at': drive.created_at.isoformat()
+        })
+    return jsonify(results), 200
+
+@admin_bp.route('/drives/<int:drive_id>/status', methods=['PUT'])
+@role_required('admin')
+def update_drive_status(drive_id):
+    admin_id = get_jwt_identity()
+    data = request.get_json()
+    status = data.get('status')
+    
+    if status not in ['approved', 'rejected']:
+        return jsonify({'message': 'Invalid status'}), 400
+        
+    drive = PlacementDrive.query.get(drive_id)
+    if not drive:
+        return jsonify({'message': 'Drive not found'}), 404
+        
+    drive.approved_status = status
+    db.session.commit()
+    
+    # Notify Company
+    notification = Notification(
+        user_id=drive.company_id,
+        role='company',
+        message=f"Your placement drive for {drive.role} has been {status}."
+    )
+    db.session.add(notification)
+    db.session.commit()
+    
+    log_activity(admin_id, 'admin', f'Admin {status} placement drive for role {drive.role}')
+    
+    return jsonify({'message': f'Drive status updated to {status}'}), 200
+
 @admin_bp.route('/reports', methods=['GET'])
 @role_required('admin')
 def get_reports():
