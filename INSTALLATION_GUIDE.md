@@ -38,13 +38,23 @@ Before you begin, ensure you have the following installed on your system:
    ```bash
    pip install -r requirements.txt
    ```
-6. **Configuration**: Create a file named `.env` in the `backend` folder and add your database credentials. For example:
+6. **Configuration & Email Setup**: 
+   The system uses an automated email engine for notifications. To make this work, you need a Google App Password:
+   - Go to your Google Account -> **Security**.
+   - Ensure **2-Step Verification** is turned ON.
+   - Search for **App Passwords** in the search bar.
+   - Name it "Campus Placement App" and click **Create**. 
+   - Copy the 16-letter password it generates.
+
+   Now, create a file named `.env` in the `backend` folder and add your database and email credentials. For example:
    ```env
    SECRET_KEY=super-secret-key
    DATABASE_URL=mysql+pymysql://root:YOUR_MYSQL_PASSWORD@localhost/campus_placement
    JWT_SECRET_KEY=jwt-secret-key
+   MAIL_USERNAME=your.actual.email@gmail.com
+   MAIL_PASSWORD=your_16_letter_app_password_with_no_spaces
    ```
-   *(Replace `YOUR_MYSQL_PASSWORD` with your actual MySQL root password).*
+   *(Replace `YOUR_MYSQL_PASSWORD` with your actual MySQL root password, and the email credentials with your own).*
 
 7. Initialize the database tables and create the default Admin account:
    ```bash

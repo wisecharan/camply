@@ -3,6 +3,7 @@ from app.models import db, Student, Company, PlacementDrive, Application, Notifi
 from app.middleware.auth import role_required
 from flask_jwt_extended import get_jwt_identity
 from sqlalchemy import func
+from app.utils.email_service import notify_approval
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -120,6 +121,10 @@ def approve_user():
     
     log_activity(admin_id, 'admin', f'Admin {status} {user_type} account for {name}')
     log_audit(admin_id, 'admin', f'Admin {status} {user_type}', f'{user_type.title()}: {name}')
+
+    if status == 'approved':
+        # Trigger Email
+        notify_approval(user.email, name)
     
     return jsonify({'message': f'{user_type.capitalize()} account status updated to {status}'}), 200
 

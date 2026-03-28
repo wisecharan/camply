@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from app.models import db, PlacementDrive, Application, Student, Notification, Company, ActivityLog, AuditLog, InterviewSlot, ResumeDownloadLog
 from app.middleware.auth import role_required
 from flask_jwt_extended import get_jwt_identity
+from app.utils.email_service import notify_application_result
+from app.tasks import process_new_drive_notifications
 
 company_bp = Blueprint('company', __name__)
 
@@ -91,7 +93,7 @@ def create_drive():
     )
     db.session.add(new_drive)
     
-    # Notify eligible students
+    # Notify eligible students (In-App)
     if data.get('eligibility_cgpa'):
         eligible_students = Student.query.filter(Student.cgpa >= data['eligibility_cgpa']).all()
     else:
@@ -109,6 +111,9 @@ def create_drive():
     
     log_activity(company_id, 'company', f'Company {company.company_name} posted a drive for {data["role"]}')
     log_audit(company_id, 'company', f'Company {company.company_name} created placement drive', f'Role: {data["role"]}')
+    
+    # Trigger Mass Email
+    process_new_drive_notifications(company.company_name, data['role'], data.get('eligibility_cgpa'))
     
     return jsonify({'message': 'Drive created successfully', 'drive_id': new_drive.id}), 201
 
@@ -255,7 +260,7 @@ def update_status():
     application.status = new_status
     company = Company.query.get(company_id)
     
-    # Notify student
+    # Notify student (In-App)
     notification = Notification(
         user_id=application.student_id,
         role='student',
@@ -267,6 +272,15 @@ def update_status():
     status_label = new_status.title()
     log_activity(company_id, 'company', f'{company.company_name} {status_label} {application.student.name} for {application.drive.role}')
     log_audit(company_id, 'company', f'Application status updated to {new_status}', f'Student: {application.student.name}, Drive: {application.drive.role}')
+    
+    # Trigger Email
+    notify_application_result(
+        user_email=application.student.email,
+        user_name=application.student.name,
+        company_name=company.company_name,
+        role=application.drive.role,
+        status=new_status
+    )
     
     return jsonify({'message': 'Application status updated successfully'}), 200
 

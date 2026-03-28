@@ -3,6 +3,7 @@ from app.models import db, Student, Company, Admin
 from flask_bcrypt import Bcrypt
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, create_refresh_token
+from app.utils.email_service import notify_registration
 
 auth_bp = Blueprint('auth', __name__)
 bcrypt = Bcrypt()
@@ -42,6 +43,9 @@ def register_student_handler():
     db.session.add(new_student)
     db.session.commit()
 
+    # Trigger Email
+    notify_registration(data['email'], data.get('name'))
+
     return jsonify({'message': 'Student registered successfully, pending admin approval'}), 201
 
 def register_company_handler():
@@ -62,6 +66,9 @@ def register_company_handler():
     )
     db.session.add(new_company)
     db.session.commit()
+
+    # Trigger Email
+    notify_registration(data['email'], data.get('company_name'))
 
     return jsonify({'message': 'Company registered successfully, pending admin approval'}), 201
 
